@@ -26,9 +26,6 @@ class Escena{
     }
 }
 let crearEscena = function(pixeles){
-    let contenedor = document.createElement('div.container.text-center');
-    contenedor.id = 'contenedor';
-    let col = document.createElement('div');
     let cuadricula = document.createElement('table');
     cuadricula.id = 'cuadricula';
     let cBody = document.createElement('tbody');
@@ -83,9 +80,8 @@ let proyectos = [];
 
 let crearProyecto = function(){
     let nom = document.getElementById("p-nom").value;
-    let tam = document.getElementById("p-pix").value;
-    p = new Proyecto(nom, tam);
+    let tam = document.getElementById("p-pix").value; 
     crearEscena(tam);
-
+    p = new Proyecto(nom, tam);
     proyectos.push(p);
 }
