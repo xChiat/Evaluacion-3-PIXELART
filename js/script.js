@@ -19,13 +19,31 @@ class Escena{
         this._nombre=nombre;
     }
     set setPixeles(pixeles){
-        this._tamaño=tamaño;
+        this._pixeles=pixeles;
     }
     set setPalette(palette){
         this._tamaño=tamaño;
     }
 }
-
+let crearEscena = function(pixeles){
+    let contenedor = document.createElement('div.container.text-center');
+    contenedor.id = 'contenedor';
+    let col = document.createElement('div');
+    let cuadricula = document.createElement('table');
+    cuadricula.id = 'cuadricula';
+    let cBody = document.createElement('tbody');
+    cBody.id = "table-body";
+    document.getElementById('cuadricula').appendChild(cBody);
+    for(let i=0; i<pixeles;i++){
+        let cRow = document.createElement('tr');
+        for(let j=0; j<pixeles; j++){
+            let cCell = document.createElement('td');
+            cRow.appendChild(cCell);
+        }
+        cBody.appendChild(cRow);
+    }
+    document.getElementById('contenedor').appendChild(cuadricula);
+}
 class Proyecto{
     constructor(id,nombre,tamaño,fechaCreacion,escena){
         this._id=id;
@@ -66,6 +84,8 @@ let proyectos = [];
 let crearProyecto = function(){
     let nom = document.getElementById("p-nom").value;
     let tam = document.getElementById("p-pix").value;
-    let fech = fecha.getDate()
-    proyectos.push();
+    p = new Proyecto(nom, tam);
+    crearEscena(tam);
+
+    proyectos.push(p);
 }
