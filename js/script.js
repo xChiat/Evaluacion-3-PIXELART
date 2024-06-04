@@ -39,7 +39,7 @@ let crearEscena = function(pixeles){
         }
         cBody.appendChild(cRow);
     }
-    document.getElementById('contenedor').appendChild(cuadricula);
+    document.getElementById('CUADRICULA').appendChild(cuadricula);
 }
 class Proyecto{
     constructor(id,nombre,tamaño,fechaCreacion,escena){
