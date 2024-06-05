@@ -26,6 +26,7 @@ class Escena {
         this._nombre = nombre;
         this._pixeles = pixeles;
         this._palette = palette;
+        this._paletas = paletas;
     }
 
     get getNombre() {
@@ -100,6 +101,26 @@ class Proyecto {
         this._fechaCreacion = fechaCreacion;
     }
 }
+
+let paleta1 = new Paleta("Paleta 1", ["#000000", "#FFFFFF", "#FF0000", "#00FF00", "#0000FF"]);
+let paleta2 = new Paleta("Paleta 2", ["#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF"]);
+let paleta3 = new Paleta("Paleta 3", ["#8B4513", "#A0522D", "#228B22", "#006400", "#8FBC8F"]);
+let paleta4 = new Paleta("Paleta 4", ["#000080", "#0000CD", "#1E90FF", "#87CEEB", "#E0FFFF"]);
+let paleta5 = new Paleta("Paleta 5", ["#7C0A02", "#D32F2F", "#FF5722", "#FF9800", "#FFC107"]);
+let paleta6 = new Paleta("Paleta 6", ["#FF4500", "#FF8C00", "#FFA500", "#FFD700", "#FFFF00"]);
+let paleta7 = new Paleta("Paleta 7", ["#2E2B5F", "#4B0082", "#8A2BE2", "#DA70D6", "#EE82EE"]);
+
+let paletasPredefinidas = [paleta1, paleta2, paleta3, paleta4, paleta5, paleta6, paleta7];
+let proyectos = [];
+console.log(proyectos)
+
+document.addEventListener("DOMContentLoaded", function() {
+    cargarSelectPaletasIniciales();
+    if (window.location.pathname.endsWith("Escena.html")) {
+        loadEscena();
+    }
+});
+
 let findProyecto = function() {
     let buscar = document.getElementById("b-nom").value;
     let p = proyectos.find(item => item.getNombre === buscar);
@@ -116,25 +137,7 @@ let findProyecto = function() {
     }
 }
 
-let paleta1 = new Paleta("Paleta 1", ["#000000", "#FFFFFF", "#FF0000", "#00FF00", "#0000FF"]);
-let paleta2 = new Paleta("Paleta 2", ["#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF"]);
-let paleta3 = new Paleta("Paleta 3", ["#8B4513", "#A0522D", "#228B22", "#006400", "#8FBC8F"]);
-let paleta4 = new Paleta("Paleta 4", ["#000080", "#0000CD", "#1E90FF", "#87CEEB", "#E0FFFF"]);
-let paleta5 = new Paleta("Paleta 5", ["#7C0A02", "#D32F2F", "#FF5722", "#FF9800", "#FFC107"]);
-let paleta6 = new Paleta("Paleta 6", ["#FF4500", "#FF8C00", "#FFA500", "#FFD700", "#FFFF00"]);
-let paleta7 = new Paleta("Paleta 7", ["#2E2B5F", "#4B0082", "#8A2BE2", "#DA70D6", "#EE82EE"]);
-
-let paletasPredefinidas = [paleta1, paleta2, paleta3, paleta4, paleta5, paleta6, paleta7];
-let proyectos = [];
-
-document.addEventListener("DOMContentLoaded", function() {
-    cargarSelectPaletasIniciales();
-    if (window.location.pathname.endsWith("Escena.html")) {
-        loadEscena();
-    }
-});
-
-function cargarSelectPaletasIniciales() {
+let cargarSelectPaletasIniciales = function() {
     let select = document.getElementById('select-paletas');
     paletasPredefinidas.forEach((paleta, index) => {
         let option = document.createElement('option');
@@ -145,7 +148,7 @@ function cargarSelectPaletasIniciales() {
     mostrarPaletaSeleccionada();
 }
 
-function mostrarPaletaSeleccionada() {
+let mostrarPaletaSeleccionada = function() {
     let select = document.getElementById('select-paletas');
     let index = select.value;
     let paletaInicial = paletasPredefinidas[index];
@@ -156,7 +159,7 @@ function mostrarPaletaSeleccionada() {
     });
 }
 
-function crearProyecto() {
+let  crearProyecto = function() {
     let nom = document.getElementById("p-nom").value;
     let tam = document.getElementById("p-px").value;
     let paletaIndex = document.getElementById("select-paletas").value;
@@ -174,7 +177,7 @@ function crearProyecto() {
     }
 }
 
-function updateTable() {
+let  updateTable = function() {
     let tableBody = document.getElementById("table-body");
     tableBody.innerHTML = "";
 
@@ -193,13 +196,13 @@ function updateTable() {
     });
 }
 
-function saveEscena(index) {
+let  saveEscena = function(index) {
     localStorage.setItem("currentEscena", JSON.stringify(proyectos[index].getEscena));
 }
 
 let escenaActual = null;
 
-function loadEscena() {
+let  loadEscena = function() {
     let escenaData = localStorage.getItem("currentEscena");
     if (escenaData) {
         let escenaObj = JSON.parse(escenaData);
@@ -214,7 +217,7 @@ function loadEscena() {
     }
 }
 
-function crearCuadricula(escena) {
+let  crearCuadricula = function(escena) {
     let container = document.getElementById("CUADRICULA");
     container.innerHTML = "";
     for (let i = 0; i < escena.getPixeles; i++) {
@@ -231,7 +234,7 @@ function crearCuadricula(escena) {
     }
 }
 
-function mostrarPaleta(paleta) {
+let  mostrarPaleta = function(paleta) {
     let paletaContainer = document.getElementById("paletaContainer");
     paletaContainer.innerHTML = `<h3>${paleta.getNombre}</h3>`;
     paleta.getColores.forEach(color => {
@@ -239,12 +242,12 @@ function mostrarPaleta(paleta) {
     });
 }
 
-function seleccionarColor(color) {
+let  seleccionarColor = function(color) {
     colorSeleccionado = color;
     console.log(`Color seleccionado: ${color}`);
 }
 
-function cargarSelectPaletas() {
+let  cargarSelectPaletas = function() {
     let selectContainer = document.getElementById('selectContainer');
     selectContainer.innerHTML = '';
 
@@ -273,7 +276,7 @@ function cargarSelectPaletas() {
     selectContainer.appendChild(select);
 }
 
-function mostrarTodasPaletas() {
+let  mostrarTodasPaletas = function() {
     let container = document.getElementById("paletasContainer");
     container.innerHTML = "";
     paletasPredefinidas.forEach((paleta, index) => {
@@ -293,17 +296,17 @@ function mostrarTodasPaletas() {
     container.innerHTML += `<div class="row"><button class="btn btn-sm btn-secondary" onclick="crearNuevaPaleta()">Crear Nueva Paleta</button></div>`;
 }
 
-function asignarPaleta(index) {
+let  asignarPaleta = function(index) {
     escenaActual.setPalette = paletasPredefinidas[index];
     mostrarPaleta(escenaActual.getPalette);
     actualizarSelectPaletas(index);
 }
 
-function actualizarSelectPaletas(index) {
+let  actualizarSelectPaletas = function(index) {
     document.getElementById('select-paletas').selectedIndex = index;
 }
 
-function crearNuevaPaleta() {
+let crearNuevaPaleta = function() {
     let nombre = prompt("Ingrese el nombre de la nueva paleta:");
     if (nombre) {
         let colores = [];
@@ -319,7 +322,7 @@ function crearNuevaPaleta() {
     }
 }
 
-function editarPaleta(index) {
+let  editarPaleta = function(index) {
     paletaEnEdicion = paletasPredefinidas[index];
     let modalBody = document.getElementById("editPaletaBody");
     modalBody.innerHTML = "";
@@ -341,8 +344,19 @@ function editarPaleta(index) {
     let modal = new bootstrap.Modal(document.getElementById("editPaletaModal"));
     modal.show();
 }
+let eliminarPaleta= function(index){
+    paletaAEliminar = paletasPredefinidas[index];
+    paletaInicial = escenaActual.getPalette.getNombre
+    if (paletaAEliminar.getNombre == paletaInicial){
+        alert("No se puede eliminar la paleta inicial");
+    }else{
+        paletasPredefinidas.splice(index, 1);
+        cargarSelectPaletas();
+        mostrarTodasPaletas();  
+    }
+}
 
-function guardarCambiosPaleta() {
+let  guardarCambiosPaleta = function() {
     if (paletaEnEdicion) {
         paletaEnEdicion.getColores.forEach((color, i) => {
             let nuevoColor = document.getElementById(`color-input-${i}`).value;
@@ -356,7 +370,7 @@ function guardarCambiosPaleta() {
     modal.hide();
 }
 
-function changeColor(i, j) {
+let  changeColor = function(i, j) {
     let cell = document.getElementById(`cell-${i}-${j}`);
     cell.style.backgroundColor = colorSeleccionado;
 }
