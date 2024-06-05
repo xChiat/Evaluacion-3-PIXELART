@@ -186,7 +186,7 @@ let  updateTable = function() {
         tableBody.innerHTML += `
             <tr>
                 <td>${proyecto.getId}</td>
-                <td><a href="site/Escena.html" onclick="saveEscena(${index})">${proyecto.getNombre}</a></td>
+                <td><a href="site/Escena.html" onclick="saveEscena(${index});">${proyecto.getNombre}</a></td>
                 <td>${proyecto.getTamaño}</td>
                 <td>${proyecto.getFechaCreacion}</td>
                 <td> Escena: ${proyecto.getEscena.getNombre} Resolucion: ${proyecto.getEscena.getPixeles} x ${proyecto.getEscena.getPixeles} Pixeles Paleta de colores: ${proyecto.getEscena.getPalette.getNombre}</td>
@@ -201,12 +201,14 @@ let  saveEscena = function(index) {
 }
 
 let escenaActual = null;
+let paletaInicial = null;
 
 let  loadEscena = function() {
     let escenaData = localStorage.getItem("currentEscena");
     if (escenaData) {
         let escenaObj = JSON.parse(escenaData);
-        escenaActual = new Escena(escenaObj._nombre, escenaObj._pixeles, new Paleta(escenaObj._palette._nombre, escenaObj._palette._colores));
+        escenaActual = new Escena(escenaObj._nombre, escenaObj._pixeles, new Paleta(escenaObj._palette._nombre, escenaObj._palette._colores),escenaObj._paletas);
+        paletaInicial = escenaActual.getPalette;
         document.getElementById("PROYECTO-NAME").textContent = escenaActual.getNombre;
         crearCuadricula(escenaActual);
         mostrarPaleta(escenaActual.getPalette);
@@ -386,9 +388,9 @@ let  editarPaleta = function(index) {
 }
 let eliminarPaleta= function(index){
     paletaAEliminar = paletasPredefinidas[index];
-    paletaInicial = escenaActual.getPalette.getNombre
-    if (paletaAEliminar.getNombre == paletaInicial){
-        alert("No se puede eliminar la paleta inicial");
+    paletaActual = escenaActual.getPalette.getNombre
+    if (paletaAEliminar.getNombre == paletaInicial.getNombre || paletaActual == paletaAEliminar.getNombre){
+        alert("No se puede eliminar la paleta Actual ni la paleta inicial");
     }else{
         paletasPredefinidas.splice(index, 1);
         cargarSelectPaletas();
