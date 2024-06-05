@@ -308,17 +308,57 @@ let  actualizarSelectPaletas = function(index) {
 
 let crearNuevaPaleta = function() {
     let nombre = prompt("Ingrese el nombre de la nueva paleta:");
-    if (nombre) {
-        let colores = [];
-        for (let i = 0; i < 5; i++) {
-            let color = prompt(`Ingrese el color ${i + 1} en formato hexadecimal (ej. #FFFFFF):`);
-            if (color) colores.push(color);
+    if (nombre === null) {
+        return;
+    }else{
+        if(validarNombrePaleta(nombre)) {
+            if (nombre) {
+                valido = true;
+                let colores = [];
+                for (let i = 0; i < 5; i++) {
+                    let color = prompt(`Ingrese el color ${i + 1} en formato hexadecimal (ej. #FFFFFF):`);
+                    if(color === null){
+                        i--;
+                        valido = false;
+                        break;
+                    }else{
+                        if (validarFormatoColores(color)){
+                            colores.push(color);
+                        }else{
+                            alert('Ingrese un color en formato hexadecimal')
+                            i--;
+                        }
+                    }    
+                }
+                if(valido){
+                    let nuevaPaleta = new Paleta(nombre, colores);
+                    paletasPredefinidas.push(nuevaPaleta);
+                    mostrarTodasPaletas();
+                }
+            } else {
+                alert("El nombre de la paleta no puede estar vacío.");
+            }
+        }else{
+            alert("Ya existe una paleta con ese nombre.");
+        } 
+    }
+}
+
+let validarNombrePaleta = function(nombre) {
+    let valido = true;
+    paletasPredefinidas.forEach(paleta => {
+        if (paleta.getNombre == nombre) {
+            valido = false;
         }
-        let nuevaPaleta = new Paleta(nombre, colores);
-        paletasPredefinidas.push(nuevaPaleta);
-        mostrarTodasPaletas();
+    });
+    return valido;
+}
+let validarFormatoColores = function(color) {
+    const expresionHex = /^#[0-9a-fA-F]{6}$/;
+    if (expresionHex.test(color)) {
+        return true;
     } else {
-        alert("El nombre de la paleta no puede estar vacío.");
+        return false;
     }
 }
 
