@@ -170,7 +170,7 @@ function updateTable() {
             <td><a href="site/Escena.html" onclick="saveEscena(${index})">${proyecto.nombre}</a></td>
             <td>${proyecto.tamaño}</td>
             <td>${proyecto.fechaCreacion}</td>
-            <td>${proyecto.getEscena.getPixeles}</td>
+            <td>${proyecto.getEscena}</td>
             <td>${paletaColores}</td>
         </tr>`;
         tableBody.innerHTML += row;
