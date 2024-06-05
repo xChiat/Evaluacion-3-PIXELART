@@ -22,7 +22,7 @@ class Paleta {
 }
 
 class Escena {
-    constructor(nombre, pixeles, palette = paletaInicial) {
+    constructor(nombre, pixeles, palette = paleta1,paletas) {
         this._nombre = nombre;
         this._pixeles = pixeles;
         this._palette = palette;
@@ -39,6 +39,9 @@ class Escena {
     get getPalette() {
         return this._palette;
     }
+    get getPaletas() {
+        return this._paletas;
+    }
 
     set setNombre(nombre) {
         this._nombre = nombre;
@@ -50,6 +53,9 @@ class Escena {
 
     set setPalette(palette) {
         this._palette = palette;
+    }
+    set setPaletas(paletas) {
+        this._paletas = paletas;
     }
 }
 
@@ -82,15 +88,15 @@ class Proyecto {
         return this._escena;
     }
 
-    set nombre(nombre) {
+    set setNombre(nombre) {
         this._nombre = nombre;
     }
 
-    set tamaño(tamaño) {
+    set setTamaño(tamaño) {
         this._tamaño = tamaño;
     }
 
-    set fechaCreacion(fechaCreacion) {
+    set setFechaCreacion(fechaCreacion) {
         this._fechaCreacion = fechaCreacion;
     }
 }
@@ -109,7 +115,8 @@ let findProyecto = function() {
         document.getElementById("upd-data").innerHTML = ""; 
     }
 }
-let paletaInicial = new Paleta("Paleta Inicial", ["#000000", "#FFFFFF", "#FF0000", "#00FF00", "#0000FF"]);
+
+let paleta1 = new Paleta("Paleta 1", ["#000000", "#FFFFFF", "#FF0000", "#00FF00", "#0000FF"]);
 let paleta2 = new Paleta("Paleta 2", ["#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF"]);
 let paleta3 = new Paleta("Paleta 3", ["#8B4513", "#A0522D", "#228B22", "#006400", "#8FBC8F"]);
 let paleta4 = new Paleta("Paleta 4", ["#000080", "#0000CD", "#1E90FF", "#87CEEB", "#E0FFFF"]);
@@ -117,7 +124,7 @@ let paleta5 = new Paleta("Paleta 5", ["#7C0A02", "#D32F2F", "#FF5722", "#FF9800"
 let paleta6 = new Paleta("Paleta 6", ["#FF4500", "#FF8C00", "#FFA500", "#FFD700", "#FFFF00"]);
 let paleta7 = new Paleta("Paleta 7", ["#2E2B5F", "#4B0082", "#8A2BE2", "#DA70D6", "#EE82EE"]);
 
-let paletasPredefinidas = [paletaInicial, paleta2, paleta3, paleta4, paleta5, paleta6, paleta7];
+let paletasPredefinidas = [paleta1, paleta2, paleta3, paleta4, paleta5, paleta6, paleta7];
 let proyectos = [];
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -141,9 +148,9 @@ function cargarSelectPaletasIniciales() {
 function mostrarPaletaSeleccionada() {
     let select = document.getElementById('select-paletas');
     let index = select.value;
-    let paletaIndex = document.getElementById("select-paletas").value;
-    let paletaInicial = paletasPredefinidas[paletaIndex];
+    let paletaInicial = paletasPredefinidas[index];
     let paletaContainer = document.getElementById("paletaSeleccionadaContainer");
+    paletaContainer.innerHTML='';
     paletaInicial.getColores.forEach(color => {
         paletaContainer.innerHTML += `<div class="color-picker" style="background-color:${color};"></div>`;
     });
@@ -158,7 +165,7 @@ function crearProyecto() {
     if (nom && tam) {
         let id = proyectos.length + 1;
         let fechaCreacion = new Date().toLocaleString();
-        let escena = new Escena(nom, tam, paletaInicial);
+        let escena = new Escena(nom, tam, paletaInicial, paletasPredefinidas);
         let p = new Proyecto(id, nom, tam, fechaCreacion, escena);
         proyectos.push(p);
         updateTable();
@@ -270,13 +277,18 @@ function mostrarTodasPaletas() {
     let container = document.getElementById("paletasContainer");
     container.innerHTML = "";
     paletasPredefinidas.forEach((paleta, index) => {
-        let paletaHtml = `<div class="col"><div class="row mb-2" onclick="asignarPaleta(${index})">`;
+        let paletaHtml = `<div class="col-4 d-flex justify-content-evenly"><div class="row" onclick="asignarPaleta(${index})">`;
+        let btnEditHtml = `<div class="col-4 d-flex justify-content-evenly"><div class="row">`;
+        let btnDltHtml = `<div class="col-4 d-flex justify-content-evenly"><div class="row">`;
         paleta.getColores.forEach(color => {
             paletaHtml += `<div class="color-picker" style="background-color:${color};"></div>`;
         });
-        paletaHtml += `</div></div><div class="col">`;
-        paletaHtml += `<button class="btn btn-sm btn-secondary" onclick="editarPaleta(${index})">Editar Paleta</button></div>`;
-        container.innerHTML += paletaHtml;
+        btnEditHtml += `<button class="btn btn-sm btn-secondary" onclick="editarPaleta(${index})">Editar Paleta</button>`;
+        btnDltHtml += `<button class="btn btn-sm btn-secondary" onclick="eliminarPaleta(${index})">Eliminar Paleta</button>`;
+        paletaHtml += `</div></div>`;
+        btnEditHtml += `</div></div>`;
+        btnDltHtml += `</div></div>`;
+        container.innerHTML += paletaHtml+btnEditHtml+btnDltHtml;
     });
     container.innerHTML += `<div class="row"><button class="btn btn-sm btn-secondary" onclick="crearNuevaPaleta()">Crear Nueva Paleta</button></div>`;
 }
