@@ -12,11 +12,11 @@ class Paleta {
         return this._colores;
     }
 
-    set setNombre(nombre) {
+    setNombre(nombre) {
         this._nombre = nombre;
     }
 
-    set setColores(colores) {
+    setColores(colores) {
         this._colores = colores;
     }
 }
@@ -44,18 +44,18 @@ class Escena {
         return this._paletas;
     }
 
-    set setNombre(nombre) {
+    setNombre(nombre) {
         this._nombre = nombre;
     }
 
-    set setPixeles(pixeles) {
+    setPixeles(pixeles) {
         this._pixeles = pixeles;
     }
 
-    set setPalette(palette) {
+    setPalette(palette) {
         this._palette = palette;
     }
-    set setPaletas(paletas) {
+    setPaletas(paletas) {
         this._paletas = paletas;
     }
 }
@@ -88,16 +88,16 @@ class Proyecto {
     get getEscena() {
         return this._escena;
     }
-
-    set setNombre(nombre) {
+    //SETTERS
+    setNombre(nombre) {
         this._nombre = nombre;
     }
 
-    set setTamaño(tamaño) {
+    setTamaño(tamaño) {
         this._tamaño = tamaño;
     }
 
-    set setFechaCreacion(fechaCreacion) {
+    setFechaCreacion(fechaCreacion) {
         this._fechaCreacion = fechaCreacion;
     }
 }
@@ -130,12 +130,50 @@ let findProyecto = function() {
         rp.innerText = "Id: " + p.getId + " Nombre: " + p.getNombre + " Tamaño: "+ p.getTamaño +" Fecha Creacion: " + p.getFechaCreacion + " Escena: "+p.getEscena.getNombre + " Resolucion: " + p.getEscena.getPixeles+" x "+ p.getEscena.getPixeles+ " Pixeles"+ " Paleta:"+p.getEscena.getPalette.getNombre;
         document.getElementById("Resultado").innerHTML = "";
         document.getElementById("Resultado").appendChild(rp);
+        let btn = document.createElement("button")
+        btn.innerText = "Actualizar Datos";
+        btn.onclick = function() {
+            desplegarForm(p.getNombre);
+        }
+        document.getElementById("Resultado").appendChild(btn);
     } else {
         alert("No Encontrada");
         document.getElementById("Resultado").innerHTML = "";
         document.getElementById("upd-data").innerHTML = ""; 
-    }
+    } 
 }
+
+let desplegarForm = function(nombre){
+    let frmUpdData = document.createElement("form")
+    frmUpdData.innerHTML = "<input type='text' name='p-nom' id='new-nom' placeholder='Nombre' class='form-control mb-2'><br>"+ 
+                            "<input type='number' name='p-px' id='new-px' placeholder='Tamaño' class='form-control mb-2'><br>";
+    let btn = document.createElement("button");
+    btn.innerText = "Actualizar";
+    btn.onclick = function() {
+        updateProyecto(nombre);
+    }
+    document.getElementById("upd-data").appendChild(frmUpdData);
+    document.getElementById("upd-data").appendChild(btn);
+}
+
+let updateProyecto = function(nombre) {
+    let p = proyectos.find(item => item.getNombre === nombre);
+
+    if (p != undefined) {
+        let nuevoNombre = document.getElementById("new-nom").value;
+        let nuevoTamaño = parseFloat(document.getElementById("new-px").value);
+
+        p.setNombre(nuevoNombre);
+        p.setTamaño(nuevoTamaño);
+        p.getEscena.setPixeles(nuevoTamaño);
+        alert("Datos actualizados.");
+        updateTable();
+        document.getElementById("upd-data").innerHTML = "";
+        document.getElementById("Resultado").innerHTML = "";
+    } else {
+        alert("Persona no encontrada para actualizar.");
+    }
+};
 
 let cargarSelectPaletasIniciales = function() {
     let select = document.getElementById('select-paletas');
