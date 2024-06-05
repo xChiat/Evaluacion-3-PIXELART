@@ -136,6 +136,12 @@ let findProyecto = function() {
             desplegarForm(p.getNombre);
         }
         document.getElementById("Resultado").appendChild(btn);
+        let btnDlt = document.createElement("button");
+        btnDlt.innerText = "Eliminar Proyecto";
+        btnDlt.onclick = function() {
+            deleteProyecto(p.getNombre);
+        }
+        document.getElementById("Resultado").appendChild(btnDlt);
     } else {
         alert("No Encontrada");
         document.getElementById("Resultado").innerHTML = "";
@@ -174,6 +180,26 @@ let updateProyecto = function(nombre) {
         alert("Persona no encontrada para actualizar.");
     }
 };
+let deleteProyecto = function(nombre){
+    let p = proyectos.find(item => item.getNombre === nombre);
+    if (p!= undefined) {
+        validar = prompt("Estas seguro de querer eliminar el proyecto "+ p.getNombre+". Escriba Si o No")
+        validar.trim();
+        if (validar.toLowerCase() == "si") {
+            proyectos.splice(proyectos.indexOf(p), 1);
+            alert("Proyecto eliminado.");
+            updateTable();
+            document.getElementById("Resultado").innerHTML = "";
+            document.getElementById("upd-data").innerHTML = "";
+        }else if(validar.toLowerCase() == "no"){
+            alert("Accion cancelada.");
+            return;
+        }else{
+            alert("Escriba SI o NO")
+            deleteProyecto(nombre);
+        }
+    }
+}
 
 let cargarSelectPaletasIniciales = function() {
     let select = document.getElementById('select-paletas');
