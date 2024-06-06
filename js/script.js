@@ -116,6 +116,7 @@ let paleta7 = new Paleta("Paleta 7", ["#2E2B5F", "#4B0082", "#8A2BE2", "#DA70D6"
 
 let paletasPredefinidas = [paleta1, paleta2, paleta3, paleta4, paleta5, paleta6, paleta7];
 let proyectos = [];
+let escenas = [];
 console.log(proyectos)
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -262,9 +263,8 @@ let  crearProyecto = function() {
                 let id = proyectos.length + 1;
                 let fechaCreacion = new Date().toLocaleString();
                 let escena = new Escena(nom, tam, paletaInicial, paletasPredefinidas);
-                let escenas = [];
                 escenas.push(escena);
-                let p = new Proyecto(id, nom, tam, fechaCreacion, escena,escenas);
+                let p = new Proyecto(id, nom, tam, fechaCreacion, escena, escenas);
                 proyectos.push(p);
                 updateTable();
             } else {
@@ -512,9 +512,15 @@ let  guardarCambiosPaleta = function() {
     if (paletaEnEdicion) {
         paletaEnEdicion.getColores.forEach((color, i) => {
             let nuevoColor = document.getElementById(`color-input-${i}`).value;
-            if (nuevoColor) {
-                paletaEnEdicion.getColores[i] = nuevoColor;
-            }
+            if(validarFormatoColores(nuevoColor)&& nuevoColor!=="") {
+                if (nuevoColor) {
+                    paletaEnEdicion.getColores[i] = nuevoColor;
+                }
+            }else if(nuevoColor === ""){
+                paletaEnEdicion.getColores[i] = paletaEnEdicion.getColores[i]
+            }else{
+                alert('Ingrese un color en formato hexadecimal')
+            }    
         });
         mostrarTodasPaletas();
     }
