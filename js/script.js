@@ -121,6 +121,7 @@ console.log(proyectos)
 
 document.addEventListener("DOMContentLoaded", function() {
     cargarSelectPaletasIniciales();
+    cargarSelectPaletasInicialesEscena();
     if (window.location.pathname.endsWith("Escena.html")) {
         loadEscena();
     }
@@ -174,7 +175,7 @@ let updateProyecto = function(nombre) {
         let nuevoNombre = document.getElementById("new-nom").value;
         let nuevoTamaño = parseInt(document.getElementById("new-px").value);
         if(validarNombreProyecto(nuevoNombre) && nuevoNombre !== ""){
-            if (nuevoTamaño>0 && nuevoTamaño<=50){
+            if (nuevoTamaño>0 && nuevoTamaño<=30){
                 p.setNombre(nuevoNombre);
                 p.setTamaño(nuevoTamaño);
                 p.getEscena.setPixeles(nuevoTamaño);
@@ -189,10 +190,10 @@ let updateProyecto = function(nombre) {
                 document.getElementById("upd-data").innerHTML = "";
                 document.getElementById("Resultado").innerHTML = "";
             }else{
-                alert(" El tamaño debe ser mayor a 0 y menor o igual a 50.");
+                alert(" El tamaño debe ser mayor a 0 y menor o igual a 30.");
             }
         }else if(nuevoNombre === ""){
-            if (nuevoTamaño>0 && nuevoTamaño<=50){
+            if (nuevoTamaño>0 && nuevoTamaño<=30){
                 p.setTamaño(nuevoTamaño);
                 p.getEscena.setPixeles(nuevoTamaño);
                 alert(nuevoNombre+"Datos actualizados.");
@@ -202,7 +203,7 @@ let updateProyecto = function(nombre) {
             }else if(isNaN(nuevoTamaño)){
                 alert("debe rellenar al menos uno de los campos")
             }else{
-                alert("El tamaño debe ser mayor a 0 y menor o igual a 50.");
+                alert("El tamaño debe ser mayor a 0 y menor o igual a 30.");
             }
         }else{
             alert("El nombre del proyecto ya existe.");
@@ -252,13 +253,34 @@ let mostrarPaletaSeleccionada = function() {
     });
 }
 
+let cargarSelectPaletasInicialesEscena = function() {
+    let select = document.getElementById('select-paletas2');
+    paletasPredefinidas.forEach((paleta, index) => {
+        let option = document.createElement('option');
+        option.value = index;
+        option.innerText = paleta.getNombre;
+        select.appendChild(option);
+    });
+    mostrarPaletaSeleccionada();
+}
+let mostrarPaletaSeleccionadaEscena = function() {
+    let select = document.getElementById('select-paletas2');
+    let index = select.value;
+    let paletaInicial = paletasPredefinidas[index];
+    let paletaContainer = document.getElementById("paletaSeleccionadaContainer2");
+    paletaContainer.innerHTML='';
+    paletaInicial.getColores.forEach(color => {
+        paletaContainer.innerHTML += `<div class="color-picker" style="background-color:${color};"></div>`;
+    });
+}
+
 let  crearProyecto = function() {
     let nom = document.getElementById("p-nom").value;
     let tam = parseInt(document.getElementById("p-px").value);
     let paletaIndex = document.getElementById("select-paletas").value;
     let paletaInicial = paletasPredefinidas[paletaIndex];
     if(validarNombreProyecto(nom)){
-        if(tam>0 && tam<=50){
+        if(tam>0 && tam<=30){
             if (nom && tam) {
                 let id = proyectos.length + 1;
                 let fechaCreacion = new Date().toLocaleString();
@@ -271,7 +293,7 @@ let  crearProyecto = function() {
                 alert("Por favor, complete todos los campos.");
             }
         }else{
-            alert("El tamaño debe ser mayor a 0 y menor o igual a 50.");
+            alert("El tamaño debe ser mayor a 0 y menor o igual a 30.");
         }   
     }else{
         alert("El nombre del proyecto ya existe.");
@@ -282,6 +304,58 @@ let validarNombreProyecto = function(nombre) {
     let valido = true;
     proyectos.forEach(proyecto => {
         if (proyecto.getNombre == nombre) {
+            valido = false;
+        }
+    });
+    return valido;
+}
+let  crearEscena = function() {
+    let pnom = document.getElementById("ep-nom").value;
+    let nom = document.getElementById("e-nom").value;
+    let tam = parseInt(document.getElementById("e-px").value);
+    let paletaIndex = document.getElementById("select-paletas2").value;
+    let paletaInicial = paletasPredefinidas[paletaIndex];
+    if(validarNombreProyecto(pnom)==false) {
+        if(validarNombreEscena(nom)){
+            if(tam>0 && tam<=30){
+                if (nom && tam) {
+                    nuevaEscena = new Escena(nom, tam, paletaInicial, paletasPredefinidas);
+                    p = proyectos.find(item => item.getNombre == pnom);
+                    p.getEscenas.push(nuevaEscena);
+                    escenaUpdateTable();
+                } else {
+                    alert("Por favor, complete todos los campos.");
+                }
+            }else{
+                alert("El tamaño debe ser mayor a 0 y menor o igual a 30.");
+            }   
+        }else{
+            alert("El nombre de la escena ya existe.");
+        }      
+    }else{
+        alert("El proyecto no existe.");
+    }
+}
+let  escenaUpdateTable = function() {
+    let tableBody = document.getElementById("E-table-body");
+    tableBody.innerHTML = "";
+    escenas.forEach((escena, index) => {
+        let paletaColores = escena.getPalette.getColores.map(color => `<div class="color-picker" style="background-color:${color};"></div>`).join('');
+        tableBody.innerHTML += `
+            <tr>
+                <td>${escena.getNombre}</td>
+                <td>${escena.getPixeles} x ${escena.getPixeles} pixeles</td>
+                <td>${escena.getPalette.getNombre}</td>
+                <td class="d-flex flex-wrap">${paletaColores}</td>
+            </tr>
+        `;
+    });
+}
+
+let validarNombreEscena = function(nombre) {
+    let valido = true;
+    escenas.forEach(escena => {
+        if (escena.getNombre == nombre) {
             valido = false;
         }
     });

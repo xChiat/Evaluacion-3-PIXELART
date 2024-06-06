@@ -28,8 +28,11 @@
             <input type="number" name="p-px" id="p-px" placeholder="Tamaño" class="form-control mb-2">
             <label for="select-paletas" class="form-label">Seleccionar paleta inicial</label>
             <div class="d-flex align-items-start">
-                <select class="form-select me-3" id="select-paletas" onchange="mostrarPaletaSeleccionada()"></select>
-                <div id="paletaSeleccionadaContainer" class="paleta-seleccionada"></div>
+                <div class="col-7">
+                    <select class="form-select me-3" id="select-paletas" onchange="mostrarPaletaSeleccionada()"></select>
+                </div>
+                <div class="col-1"></div>         
+                <div id="paletaSeleccionadaContainer" class="col-4 paleta-seleccionada"></div>
             </div>
             <input type="button" value="Agregar" class="btn btn-primary mt-3" onclick="crearProyecto()">
         </fieldset>
@@ -54,6 +57,41 @@
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
+    </table>
+    <form>
+        <fieldset><legend>Agregar Escenas</legend>
+            <input type="text" name="ep-nom" id="ep-nom" placeholder="Nombre del proyecto" class="form-control mb-2">
+            <input type="text" name="e-nom" id="e-nom" placeholder="Nombre de la escena" class="form-control mb-2">
+            <input type="number" name="e-px" id="e-px" placeholder="Tamaño" class="form-control mb-2">
+            <label for="select-paletas2" class="form-label">Seleccionar paleta inicial de la Escena</label>
+            <div class="d-flex align-items-start">
+                <div class="col-7">
+                    <select class="form-select me-3" id="select-paletas2" onchange="mostrarPaletaSeleccionadaEscena()"></select>
+                </div>
+                <div class="col-1"></div>              
+                <div id="paletaSeleccionadaContainer2" class="col-4 paleta-seleccionada"></div>
+            </div>
+            <input type="button" value="Agregar" class="btn btn-primary mt-3" onclick="crearEscena()">
+        </fieldset>
+    </form>
+    <form>
+        <fieldset><legend>Buscar Escenas</legend>
+            <input type="text" name="be-nom" id="be-nom" placeholder="Buscar Escena por Nombre" class="form-control mb-2">
+            <input type="button" value="Buscar" class="btn btn-secondary" onclick="findEscena()">
+        </fieldset>
+    </form>
+    <div id="E-Resultado"></div>
+    <div id="E-upd-data"></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Dimensiones</th>
+                <th scope="col">Paleta inicial</th>
+                <th scope="col">Colores de la paleta</th>
+            </tr>
+        </thead>
+        <tbody id="E-table-body"></tbody>
     </table>
 </body>
 </html>
