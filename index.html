@@ -35,44 +35,51 @@
         #upd-Escena{
             margin-top: 10px;
         }
+        .contenedores{
+            margin-top: 10px;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
-        <form>        
-            <fieldset><legend>Nuevo proyecto</legend>
-                <div class="row d-flex align-items-center">
-                    <div class="col">
-                        <input type="text" name="p-nom" id="p-nom" placeholder="Nombre" class="form-control mb-2">
+        <div class="contenedores border">
+            <form>        
+                <fieldset><legend>Nuevo proyecto</legend>
+                    <div class="row d-flex align-items-center">
+                        <div class="col">
+                            <input type="text" name="p-nom" id="p-nom" placeholder="Nombre" class="form-control mb-2">
+                        </div>
+                        <div class="col">
+                            <input type="number" name="p-px" id="p-px" placeholder="Tamaño" class="form-control mb-2">
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-start">
+                                <div class="col-7">
+                                    <select class="form-select me-3" id="select-paletas" onchange="mostrarPaletaSeleccionada()"><label for="select-paletas" class="form-label">Seleccionar paleta inicial</label></select>
+                                </div>
+                                <div class="col-1"></div>         
+                                <div id="paletaSeleccionadaContainer" class="col-4 paleta-seleccionada"></div>
+                            </div>        
+                        </div>
+                        <div class="col">
+                            <input type="button" value="Crear Proyecto" class="btn btn-outline-dark" onclick="crearProyecto()">
+                        </div>
                     </div>
-                    <div class="col">
-                        <input type="number" name="p-px" id="p-px" placeholder="Tamaño" class="form-control mb-2">
-                    </div>
-                    <div class="col">
-                        <div class="d-flex align-items-start">
-                            <div class="col-7">
-                                <select class="form-select me-3" id="select-paletas" onchange="mostrarPaletaSeleccionada()"><label for="select-paletas" class="form-label">Seleccionar paleta inicial</label></select>
-                            </div>
-                            <div class="col-1"></div>         
-                            <div id="paletaSeleccionadaContainer" class="col-4 paleta-seleccionada"></div>
-                        </div>        
-                    </div>
-                    <div class="col">
-                        <input type="button" value="Crear Proyecto" class="btn btn-outline-dark" onclick="crearProyecto()">
-                    </div>
-                </div>
-            </fieldset>
-        </form>
-        <form>
-            <fieldset><legend>Buscar Proyecto</legend>
-                <input type="text" name="b-nom" id="b-nom" placeholder="Buscar por Nombre" class="form-control mb-2">
-                <input type="button" value="Buscar" class="btn btn-outline-dark" onclick="findProyecto()">
-            </fieldset>
-        </form>
-        <div id="Resultado"></div>
-        <div id="upd-data"></div>
+                </fieldset>
+            </form>
+            <form>
+                <fieldset><legend>Buscar Proyecto</legend>
+                    <input type="text" name="b-nom" id="b-nom" placeholder="Buscar por Nombre" class="form-control mb-2">
+                    <input type="button" value="Buscar" class="btn btn-outline-dark" onclick="findProyecto()">
+                </fieldset>
+            </form>
+            <div id="Resultado"></div>
+            <div id="upd-data"></div>
+        </div>
+        <h4>Proyectos</h4>
         <table class="table">
-            <thead>
+            <thead class="table-dark">
                 <tr>
                     <th scope="col">id</th>
                     <th scope="col">Nombre</th>
@@ -80,52 +87,53 @@
                     <th scope="col">FechaCreacion</th>
                     <th scope="col">Escena Principal</th>
                     <th scope="col">Paleta de colores Principal</th>
-                    <th scope="col">Escenas del proyecto</th>
-                    <th scope="col">Paletas del proyecto</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
         </table>
-        <form>
-            <fieldset><legend>Agregar Escenas</legend>
-                <div class="row">
-                    <div class="col">
-                        <input type="text" name="ep-nom" id="ep-nom" placeholder="Nombre del proyecto" class="form-control mb-2">
-                    </div>
-                    <div class="col">
-                        <input type="text" name="e-nom" id="e-nom" placeholder="Nombre de la escena" class="form-control mb-2">
-                    </div>
-                    <div class="col">
-                        <input type="number" name="e-px" id="e-px" placeholder="Tamaño" class="form-control mb-2">
-                    </div>
-                </div>
-                <div class="row d-flex align-items-center">
-                    <div class="col-8">
-                        <label for="select-paletas2" class="form-label">Seleccionar paleta inicial de la Escena</label>
-                        <div class="d-flex align-items-start">
-                            <div class="col-7">
-                                <select class="form-select me-3" id="select-paletas2" onchange="mostrarPaletaSeleccionadaEscena()"></select>
-                            </div>
-                            <div class="col-1"></div>              
-                            <div id="paletaSeleccionadaContainer2" class="col-4 paleta-seleccionada"></div>
+        <div class="contenedores border">
+            <form>
+                <fieldset><legend>Agregar Escenas</legend>
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" name="ep-nom" id="ep-nom" placeholder="Nombre del proyecto" class="form-control mb-2">
+                        </div>
+                        <div class="col">
+                            <input type="text" name="e-nom" id="e-nom" placeholder="Nombre de la escena" class="form-control mb-2">
+                        </div>
+                        <div class="col">
+                            <input type="number" name="e-px" id="e-px" placeholder="Tamaño" class="form-control mb-2">
                         </div>
                     </div>
-                    <div class="col-4">
-                        <input type="button" value="Crear Nueva Escena" class="btn btn-outline-dark" onclick="crearEscena()">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-8">
+                            <label for="select-paletas2" class="form-label">Seleccionar paleta inicial de la Escena</label>
+                            <div class="d-flex align-items-start">
+                                <div class="col-7">
+                                    <select class="form-select me-3" id="select-paletas2" onchange="mostrarPaletaSeleccionadaEscena()"></select>
+                                </div>
+                                <div class="col-1"></div>              
+                                <div id="paletaSeleccionadaContainer2" class="col-4 paleta-seleccionada"></div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <input type="button" value="Crear Nueva Escena" class="btn btn-outline-dark" onclick="crearEscena()">
+                        </div>
                     </div>
-                </div>
-            </fieldset>
-        </form>
-        <form>
-            <fieldset><legend>Buscar Escenas</legend>
-                <input type="text" name="be-nom" id="be-nom" placeholder="Buscar Escena por Nombre" class="form-control mb-2">
-                <input type="button" value="Buscar" class="btn btn-outline-dark" onclick="findEscena()">
-            </fieldset>
-        </form>
-        <div id="E-Resultado"></div>
-        <div id="E-upd-data"></div>
+                </fieldset>
+            </form>
+            <form>
+                <fieldset><legend>Buscar Escenas</legend>
+                    <input type="text" name="be-nom" id="be-nom" placeholder="Buscar Escena por Nombre" class="form-control mb-2">
+                    <input type="button" value="Buscar" class="btn btn-outline-dark" onclick="findEscena()">
+                </fieldset>
+            </form>
+            <div id="E-Resultado"></div>
+            <div id="E-upd-data"></div>    
+        </div>
+        <h4>Escenas</h4>
         <table class="table">
-            <thead>
+            <thead class="table-dark">
                 <tr>
                     <th scope="col">Proyecto</th>
                     <th scope="col">Nombre</th>
@@ -135,7 +143,17 @@
                 </tr>
             </thead>
             <tbody id="E-table-body"></tbody>
-        </table>    
+        </table>
+        <h4>Paletas de colores</h4>
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Colores de la paleta</th>
+                </tr>
+            </thead>
+            <tbody id="p-table-body"></tbody>
+        </table>     
     </div>
 </body>
 </html>

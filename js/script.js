@@ -274,6 +274,7 @@ let updateProyecto = function(nombre) {
                 p.getEscena.setPixeles(nuevoTamaño);
                 alert(nuevoNombre+"Datos actualizados.");
                 updateTable();
+                escenaUpdateTable();
                 document.getElementById("upd-data").innerHTML = "";
                 document.getElementById("Resultado").innerHTML = "";
             }else if(isNaN(nuevoTamaño)){
@@ -523,6 +524,7 @@ let cargarSelectPaletasInicialesEscena = function() {
         select.appendChild(option);
     });
     mostrarPaletaSeleccionada();
+    paletaUpdateTable();
 }
 let mostrarPaletaSeleccionadaEscena = function() {
     let select = document.getElementById('select-paletas2');
@@ -601,7 +603,7 @@ let  crearEscena = function() {
 let  escenaUpdateTable = function() {
     let tableBody = document.getElementById("E-table-body");
     tableBody.innerHTML = "";
-    escenas.forEach((escena, index) => {
+    escenas.forEach(escena => {
         let paletaColores = escena.getPalette.getColores.map(color => `<div class="color-picker" style="background-color:${color};"></div>`).join('');
         tableBody.innerHTML += `
             <tr>
@@ -614,7 +616,19 @@ let  escenaUpdateTable = function() {
         `;
     });
 }
-
+let  paletaUpdateTable = function() {
+    let tableBody = document.getElementById("p-table-body");
+    tableBody.innerHTML = "";
+    paletasPredefinidas.forEach(paleta => {
+        let paletaColores = paleta.getColores.map(color => `<div class="color-picker" style="background-color:${color};"></div>`).join('');
+        tableBody.innerHTML += `
+            <tr>
+                <td>${paleta.getNombre}</td>
+                <td class="d-flex flex-wrap">${paletaColores}</td>
+            </tr>
+        `;
+    });
+}
 let validarNombreEscena = function(nombre) {
     let valido = true;
     escenas.forEach(escena => {
@@ -627,7 +641,6 @@ let validarNombreEscena = function(nombre) {
 let  updateTable = function() {
     let tableBody = document.getElementById("table-body");
     tableBody.innerHTML = "";
-
     proyectos.forEach((proyecto, index) => {
         let paletaColores = proyecto.getEscena.getPalette.getColores.map(color => `<div class="color-picker" style="background-color:${color};"></div>`).join('');
         if(proyecto.getTamaño == proyecto.getEscena.getPixeles){
@@ -651,9 +664,9 @@ let  updateTable = function() {
                 <td>${proyecto.getFechaCreacion}</td>
                 <td> Escena: ${proyecto.getEscena.getNombre} Resolucion: ${proyecto.getEscena.getPixeles} x ${proyecto.getEscena.getPixeles} Pixeles Paleta de colores: ${proyecto.getEscena.getPalette.getNombre}</td>
                 <td class="d-flex flex-wrap">${paletaColores}</td>
+                
             </tr>
         `;
-
         }
     });
 }
