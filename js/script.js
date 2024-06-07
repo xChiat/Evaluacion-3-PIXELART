@@ -22,13 +22,16 @@ class Paleta {
 }
 
 class Escena {
-    constructor(nombre, pixeles, palette = paleta1,paletas) {
+    constructor(proyecto,nombre, pixeles, palette = paleta1,paletas) {
+        this._proyecto = proyecto;
         this._nombre = nombre;
         this._pixeles = pixeles;
         this._palette = palette;
         this._paletas = paletas;
     }
-
+    get getProyecto() {
+        return this._proyecto;
+    }
     get getNombre() {
         return this._nombre;
     }
@@ -43,7 +46,9 @@ class Escena {
     get getPaletas() {
         return this._paletas;
     }
-
+    setProyecto(proyecto) {
+        this._proyecto = proyecto;
+    }
     setNombre(nombre) {
         this._nombre = nombre;
     }
@@ -133,21 +138,65 @@ let findProyecto = function() {
 
     if (p != undefined) {
         let rp = document.createElement("span");
-        rp.innerText = "Id: " + p.getId + " Nombre: " + p.getNombre + " Tamaño: "+ p.getTamaño +" Fecha Creacion: " + p.getFechaCreacion + " Escena: "+p.getEscena.getNombre + " Resolucion: " + p.getEscena.getPixeles+" x "+ p.getEscena.getPixeles+ " Pixeles"+ " Paleta:"+p.getEscena.getPalette.getNombre;
+        rp.innerText = "Id: " + p.getId + " Nombre: " + p.getNombre + " Tamaño: "+ p.getTamaño +" Fecha Creacion: " + p.getFechaCreacion + " Escena: "+p.getEscena.getNombre + " Resolucion: " + p.getEscena.getPixeles+" x "+ p.getEscena.getPixeles+ " Pixeles"+ " Paleta:"+p.getEscena.getPalette.getNombre+"  ";
         document.getElementById("Resultado").innerHTML = "";
         document.getElementById("Resultado").appendChild(rp);
         let btn = document.createElement("button")
+        btn.disabled = false;
         btn.innerText = "Actualizar Datos";
         btn.onclick = function() {
+            btn.disabled = true;
+            btnDlt.disabled = true;
             desplegarForm(p.getNombre);
         }
         document.getElementById("Resultado").appendChild(btn);
         let btnDlt = document.createElement("button");
+        btnDlt.disabled = false;
         btnDlt.innerText = "Eliminar Proyecto";
         btnDlt.onclick = function() {
+            btn.disabled = true;
             deleteProyecto(p.getNombre);
         }
         document.getElementById("Resultado").appendChild(btnDlt);
+    } else {
+        alert("No Encontrada");
+        document.getElementById("Resultado").innerHTML = "";
+        document.getElementById("upd-data").innerHTML = ""; 
+    } 
+}
+
+let findEscena = function() {
+    let buscar = document.getElementById("be-nom").value;
+    let e = escenas.find(item => item.getNombre === buscar);
+
+    if (e != undefined) {
+        nombresPaletas = "";
+        e.getPaletas.forEach(paleta => {
+            let nompaleta = paleta.getNombre;
+            nombresPaletas += nompaleta + " ";
+        });
+        let rp = document.createElement("span");
+        rp.innerText = "Nombre: " + e.getNombre + " Dimensiones: "+ e.getPixeles+" x "+ e.getPixeles + " Paleta Inicial: " + e.getPalette.getNombre + " Colores: ";
+        rp.innerHTML += e.getPalette.getColores.map(color => `<div class="color-picker-buscar" style="background-color:${color};"></div>`).join('') + " Paletas: "+ nombresPaletas+" ";
+        document.getElementById("E-Resultado").innerHTML = "";
+        document.getElementById("E-Resultado").appendChild(rp);
+        let btn = document.createElement("button")
+        btn.disabled = false;
+        btn.innerText = "Actualizar Datos";
+        btn.onclick = function() {
+            btn.disabled = true;
+            btnDlt.disabled = true;
+            desplegarFormEscena(e.getNombre);
+        }
+        document.getElementById("E-Resultado").appendChild(btn);
+        let btnDlt = document.createElement("button");
+        btnDlt.disabled = false;
+        btnDlt.innerText = "Eliminar Escena";
+        btnDlt.onclick = function() {
+            btn.disabled = true;
+            deleteEscena(e.getNombre);
+        }
+        document.getElementById("E-Resultado").appendChild(btnDlt);
     } else {
         alert("No Encontrada");
         document.getElementById("Resultado").innerHTML = "";
@@ -167,24 +216,51 @@ let desplegarForm = function(nombre){
     document.getElementById("upd-data").appendChild(frmUpdData);
     document.getElementById("upd-data").appendChild(btn);
 }
+let desplegarFormEscena = function(nombre){
+    let frmUpdData = document.createElement("form")
+    frmUpdData.id = "upd-Escena";
+    frmUpdData.innerHTML = "<input type='text' name='p-nom' id='E-new-nom' placeholder='Nuevo Nombre' class='form-control mb-2'><br>"+ 
+                            "<input type='number' name='p-px' id='E-new-px' placeholder='Nuevo tamaño' class='form-control mb-2'><br>";
+    let btn = document.createElement("button");
+    btn.innerText = "Actualizar";
+    btn.onclick = function() {
+        updateEscena(nombre);
+    }
+    document.getElementById("E-upd-data").appendChild(frmUpdData);
+    document.getElementById("E-upd-data").appendChild(btn);
+}
 
 let updateProyecto = function(nombre) {
     let p = proyectos.find(item => item.getNombre === nombre);
-
+    let e = escenas.find(item => item.getNombre === nombre);
     if (p != undefined) {
         let nuevoNombre = document.getElementById("new-nom").value;
         let nuevoTamaño = parseInt(document.getElementById("new-px").value);
         if(validarNombreProyecto(nuevoNombre) && nuevoNombre !== ""){
             if (nuevoTamaño>0 && nuevoTamaño<=30){
+                escenas.forEach(escena =>{
+                    if(escena.getProyecto === p.getNombre){
+                        escena.setProyecto(nuevoNombre);
+                    }
+                })
                 p.setNombre(nuevoNombre);
+                e.setNombre(nuevoNombre);
                 p.setTamaño(nuevoTamaño);
                 p.getEscena.setPixeles(nuevoTamaño);
-                alert(nuevoNombre+"Datos actualizados.");
+                alert("Datos actualizados.");
                 updateTable();
+                escenaUpdateTable();
                 document.getElementById("upd-data").innerHTML = "";
                 document.getElementById("Resultado").innerHTML = "";
             }else if(isNaN(nuevoTamaño)){
+                escenas.forEach(escena =>{
+                    if(escena.getProyecto === p.getNombre){
+                        escena.setProyecto(nuevoNombre);
+                    }
+                })
                 p.setNombre(nuevoNombre);
+                e.setNombre(nuevoNombre);
+                escenaUpdateTable();
                 alert("Datos actualizados.");
                 updateTable();
                 document.getElementById("upd-data").innerHTML = "";
@@ -210,27 +286,212 @@ let updateProyecto = function(nombre) {
         }
     }
 };
+
+let updateEscena = function(nombre) {
+    let p = proyectos.find(item => item.getNombre === nombre);
+    let e = escenas.find(item => item.getNombre === nombre);
+    if (e != undefined) {
+        if(p != undefined){
+            nompro = p.getNombre;
+            nome = p.getNombre;
+            let nuevoNombre = document.getElementById("E-new-nom").value;
+            let nuevoTamaño = parseInt(document.getElementById("E-new-px").value);
+            if(validarNombreEscena(nuevoNombre) && nuevoNombre !== ""){
+                if (nompro != nome){
+                    if (nuevoTamaño>0 && nuevoTamaño<=30){
+                        e.setNombre(nuevoNombre);
+                        e.setPixeles(nuevoTamaño);
+                        alert("Datos actualizados.");
+                        updateTable();
+                        escenaUpdateTable();
+                        document.getElementById("E-upd-data").innerHTML = "";
+                        document.getElementById("E-Resultado").innerHTML = "";
+                    }else if(isNaN(nuevoTamaño)){
+                        e.setNombre(nuevoNombre);
+                        alert("Datos actualizados.");
+                        updateTable();
+                        escenaUpdateTable();
+                        document.getElementById("E-upd-data").innerHTML = "";
+                        document.getElementById("E-Resultado").innerHTML = "";
+                    }else{
+                        alert(" El tamaño debe ser mayor a 0 y menor o igual a 30.");
+                    }    
+                }else{
+                    alert("No se puede modificar el nombre de la escena principal");
+                    document.getElementById("E-upd-data").innerHTML = "";
+                    document.getElementById("E-Resultado").innerHTML = "";
+                }
+            }else if(nuevoNombre === ""){
+                if (nuevoTamaño>0 && nuevoTamaño<=30){
+                    e.setPixeles(nuevoTamaño);
+                    alert(nuevoNombre+"Datos actualizados.");
+                    updateTable();
+                    escenaUpdateTable();
+                    document.getElementById("E-upd-data").innerHTML = "";
+                    document.getElementById("E-Resultado").innerHTML = "";
+                }else if(isNaN(nuevoTamaño)){
+                    alert("debe rellenar al menos uno de los campos");
+                    document.getElementById("E-upd-data").innerHTML = "";
+                    document.getElementById("E-Resultado").innerHTML = "";
+                }else{
+                    alert("El tamaño debe ser mayor a 0 y menor o igual a 30.");
+                }
+            }else{
+                alert("El nombre de la escena ya existe.");
+            }    
+        }else{
+            let nuevoNombre = document.getElementById("E-new-nom").value;
+            let nuevoTamaño = parseInt(document.getElementById("E-new-px").value);
+            if(validarNombreEscena(nuevoNombre) && nuevoNombre !== ""){
+                if (nuevoTamaño>0 && nuevoTamaño<=30){
+                    e.setNombre(nuevoNombre);
+                    e.setPixeles(nuevoTamaño);
+                    alert("Datos actualizados.");
+                    updateTable();
+                    escenaUpdateTable();
+                    document.getElementById("E-upd-data").innerHTML = "";
+                    document.getElementById("E-Resultado").innerHTML = "";
+                }else if(isNaN(nuevoTamaño)){
+                    e.setNombre(nuevoNombre);
+                    alert("Datos actualizados.");
+                    updateTable();
+                    escenaUpdateTable();
+                    document.getElementById("E-upd-data").innerHTML = "";
+                    document.getElementById("E-Resultado").innerHTML = "";
+                }else{
+                    alert(" El tamaño debe ser mayor a 0 y menor o igual a 30.");
+                }
+            }else if(nuevoNombre === ""){
+                if (nuevoTamaño>0 && nuevoTamaño<=30){
+                    e.setPixeles(nuevoTamaño);
+                    alert(nuevoNombre+"Datos actualizados.");
+                    updateTable();
+                    escenaUpdateTable();
+                    document.getElementById("E-upd-data").innerHTML = "";
+                    document.getElementById("E-Resultado").innerHTML = "";
+                }else if(isNaN(nuevoTamaño)){
+                    alert("debe rellenar al menos uno de los campos");
+                    document.getElementById("E-upd-data").innerHTML = "";
+                    document.getElementById("E-Resultado").innerHTML = "";
+                }else{
+                    alert("El tamaño debe ser mayor a 0 y menor o igual a 30.");
+                }
+            }else{
+                alert("El nombre de la escena ya existe.");
+            }
+        }
+    }
+};
 let deleteProyecto = function(nombre){
     let p = proyectos.find(item => item.getNombre === nombre);
     if (p!= undefined) {
         validar = prompt("Estas seguro de querer eliminar el proyecto "+ p.getNombre+". Escriba Si o No")
-        validar.trim();
-        if (validar.toLowerCase() == "si") {
-            proyectos.splice(proyectos.indexOf(p), 1);
-            alert("Proyecto eliminado.");
-            updateTable();
+        if(validar === null){
+            alert("Accion cancelada.");
             document.getElementById("Resultado").innerHTML = "";
             document.getElementById("upd-data").innerHTML = "";
-        }else if(validar.toLowerCase() == "no"){
-            alert("Accion cancelada.");
             return;
-        }else{
-            alert("Escriba SI o NO")
-            deleteProyecto(nombre);
+        }
+        else{
+            validar.trim();
+            if (validar.toLowerCase() == "si") {
+                deleteEscenasProyecto(p.getNombre);
+                proyectos.splice(proyectos.indexOf(p), 1);
+                alert("Proyecto eliminado.");
+                updateTable();
+                document.getElementById("Resultado").innerHTML = "";
+                document.getElementById("upd-data").innerHTML = "";
+            }else if(validar.toLowerCase() == "no"){
+                alert("Accion cancelada.");
+                document.getElementById("Resultado").innerHTML = "";
+                document.getElementById("upd-data").innerHTML = "";
+                return;
+            }else{
+                alert("Escriba SI o NO")
+                deleteProyecto(nombre);
+            }    
         }
     }
 }
+let deleteEscenasProyecto= function(nomproy){
+    let listaFiltrada = escenas.filter(item => item.getProyecto !== nomproy);
+    if(listaFiltrada.length > 0){
+        escenas = listaFiltrada;
+        escenaUpdateTable();
+    }else{
+        escenas = [];
+        escenaUpdateTable();
+    }
+}
 
+let deleteEscena = function(nombre){
+    let p = proyectos.find(item => item.getNombre === nombre);
+    let e = escenas.find(item => item.getNombre === nombre);
+    if (e!= undefined && p != e) {
+        validar = prompt("Estas seguro de querer eliminar la Escena "+ e.getNombre+". Escriba Si o No")
+        if(validar === null){
+            alert("Accion cancelada.");
+            document.getElementById("E-Resultado").innerHTML = "";
+            document.getElementById("E-upd-data").innerHTML = "";
+            return;
+        }else{
+            validar.trim();
+            if(p != undefined){
+                nompro = p.getNombre;
+                nome = p.getNombre;
+                if (nompro != nome){
+                    if (validar.toLowerCase() == "si") {
+                        escenas.splice(escenas.indexOf(e), 1);
+                        alert("Escena eliminada.");
+                        updateTable();
+                        escenaUpdateTable();
+                        document.getElementById("E-Resultado").innerHTML = "";
+                        document.getElementById("E-upd-data").innerHTML = "";
+                    }else if(validar.toLowerCase() == "no"){
+                        alert("Accion cancelada.");
+                        document.getElementById("E-Resultado").innerHTML = "";
+                        document.getElementById("E-upd-data").innerHTML = "";
+                    }else{
+                        alert("Escriba SI o NO")
+                        deleteEscena(nombre);
+                    }
+                }else if(nompro == nome){
+                    if (validar.toLowerCase() == "si") {
+                        alert("No se puede Eliminar la escena Principal");
+                        document.getElementById("E-Resultado").innerHTML = "";
+                        document.getElementById("E-upd-data").innerHTML = "";
+                    }else if(validar.toLowerCase() == "no"){
+                        alert("Accion cancelada.");
+                        document.getElementById("E-Resultado").innerHTML = "";
+                        document.getElementById("E-upd-data").innerHTML = "";
+                    }else{
+                        alert("Escriba SI o NO")
+                        deleteEscena(nombre);
+                    }
+                } 
+        
+            }else{
+                if (validar.toLowerCase() == "si") {
+                    escenas.splice(escenas.indexOf(e), 1);
+                    alert("Escena eliminada.");
+                    updateTable();
+                    escenaUpdateTable();
+                    document.getElementById("E-Resultado").innerHTML = "";
+                    document.getElementById("E-upd-data").innerHTML = "";
+                }else if(p == e){
+                    alert("No se puede Eliminar la escena Principal");
+                }else if(validar.toLowerCase() == "no"){
+                    alert("Accion cancelada.");
+                    document.getElementById("E-Resultado").innerHTML = "";
+                    document.getElementById("E-upd-data").innerHTML = "";
+                }else{
+                    alert("Escriba SI o NO")
+                    deleteEscena(nombre);
+                }
+            }    
+        }
+    }
+}
 let cargarSelectPaletasIniciales = function() {
     let select = document.getElementById('select-paletas');
     paletasPredefinidas.forEach((paleta, index) => {
@@ -284,11 +545,12 @@ let  crearProyecto = function() {
             if (nom && tam) {
                 let id = proyectos.length + 1;
                 let fechaCreacion = new Date().toLocaleString();
-                let escena = new Escena(nom, tam, paletaInicial, paletasPredefinidas);
+                let escena = new Escena(nom,nom, tam, paletaInicial, paletasPredefinidas);
                 escenas.push(escena);
                 let p = new Proyecto(id, nom, tam, fechaCreacion, escena, escenas);
                 proyectos.push(p);
                 updateTable();
+                escenaUpdateTable();
             } else {
                 alert("Por favor, complete todos los campos.");
             }
@@ -319,7 +581,7 @@ let  crearEscena = function() {
         if(validarNombreEscena(nom)){
             if(tam>0 && tam<=30){
                 if (nom && tam) {
-                    nuevaEscena = new Escena(nom, tam, paletaInicial, paletasPredefinidas);
+                    nuevaEscena = new Escena(pnom, nom, tam, paletaInicial, paletasPredefinidas);
                     p = proyectos.find(item => item.getNombre == pnom);
                     p.getEscenas.push(nuevaEscena);
                     escenaUpdateTable();
@@ -343,6 +605,7 @@ let  escenaUpdateTable = function() {
         let paletaColores = escena.getPalette.getColores.map(color => `<div class="color-picker" style="background-color:${color};"></div>`).join('');
         tableBody.innerHTML += `
             <tr>
+                <td>${escena.getProyecto}</td>
                 <td>${escena.getNombre}</td>
                 <td>${escena.getPixeles} x ${escena.getPixeles} pixeles</td>
                 <td>${escena.getPalette.getNombre}</td>
@@ -367,7 +630,8 @@ let  updateTable = function() {
 
     proyectos.forEach((proyecto, index) => {
         let paletaColores = proyecto.getEscena.getPalette.getColores.map(color => `<div class="color-picker" style="background-color:${color};"></div>`).join('');
-        tableBody.innerHTML += `
+        if(proyecto.getTamaño == proyecto.getEscena.getPixeles){
+            tableBody.innerHTML += `
             <tr>
                 <td>${proyecto.getId}</td>
                 <td><a href="site/Escena.html" onclick="saveEscena(${index});">${proyecto.getNombre}</a></td>
@@ -377,6 +641,20 @@ let  updateTable = function() {
                 <td class="d-flex flex-wrap">${paletaColores}</td>
             </tr>
         `;
+        }else{
+            proyecto.setTamaño(proyecto.getEscena.getPixeles);
+            tableBody.innerHTML += `            
+            <tr>
+                <td>${proyecto.getId}</td>
+                <td><a href="site/Escena.html" onclick="saveEscena(${index});">${proyecto.getNombre}</a></td>
+                <td>${proyecto.getTamaño}</td>
+                <td>${proyecto.getFechaCreacion}</td>
+                <td> Escena: ${proyecto.getEscena.getNombre} Resolucion: ${proyecto.getEscena.getPixeles} x ${proyecto.getEscena.getPixeles} Pixeles Paleta de colores: ${proyecto.getEscena.getPalette.getNombre}</td>
+                <td class="d-flex flex-wrap">${paletaColores}</td>
+            </tr>
+        `;
+
+        }
     });
 }
 
@@ -391,7 +669,7 @@ let  loadEscena = function() {
     let escenaData = localStorage.getItem("currentEscena");
     if (escenaData) {
         let escenaObj = JSON.parse(escenaData);
-        escenaActual = new Escena(escenaObj._nombre, escenaObj._pixeles, new Paleta(escenaObj._palette._nombre, escenaObj._palette._colores),escenaObj._paletas);
+        escenaActual = new Escena(escenaObj._proyecto, escenaObj._nombre, escenaObj._pixeles, new Paleta(escenaObj._palette._nombre, escenaObj._palette._colores),escenaObj._paletas);
         paletaInicial = escenaActual.getPalette;
         document.getElementById("PROYECTO-NAME").innerHTML += escenaActual.getNombre;
         crearCuadricula(escenaActual);
